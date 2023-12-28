@@ -21,7 +21,7 @@ try:
     # Thực hiện kết nối SSH
     ssh.connect(ssh_host, ssh_port, ssh_username, ssh_password)
 
-    print("SSH Connection Successfully")
+    print("SSH Connection Successfully!")
 
     # Tạo kênh chuyển tiếp SSH
     ssh_channel = ssh.get_transport().open_channel('direct-tcpip', (mysql_host, 3306), ('127.0.0.1', 0))
@@ -38,7 +38,7 @@ try:
         database=mysql_db
     )
 
-    print("MySQL Connection Successfully")
+    print("MySQL Connection Successfully!")
 
     # Thực hiện các thao tác MySQL ở đây nếu cần
     # ...
