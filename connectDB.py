@@ -2,13 +2,13 @@ import paramiko
 import mysql.connector
 
 # Thông tin SSH
-ssh_host = '192.168.241.6'
+ssh_host = '192.168.241.2'
 ssh_port = 22
 ssh_username = 'thaituan'
 ssh_password = 'Tuan@8999'
 
 # Thông tin kết nối MySQL
-mysql_host = '192.168.241.6'  # Địa chỉ IP của máy chủ MySQL
+mysql_host = '192.168.241.2'  # Địa chỉ IP của máy chủ MySQL
 mysql_user = 'thaituan'
 mysql_password = 'Tuan@8999'
 mysql_db = 'local'
@@ -21,7 +21,7 @@ try:
     # Thực hiện kết nối SSH
     ssh.connect(ssh_host, ssh_port, ssh_username, ssh_password)
 
-    print("Kết nối SSH thành công!")
+    print("SSH Connection Successfully")
 
     # Tạo kênh chuyển tiếp SSH
     ssh_channel = ssh.get_transport().open_channel('direct-tcpip', (mysql_host, 3306), ('127.0.0.1', 0))
@@ -31,14 +31,14 @@ try:
 
     # Kết nối MySQL qua SSH
     mysql_conn = mysql.connector.connect(
-        host='192.168.241.6',
+        host='192.168.241.2',
         port=3306,
         user=mysql_user,
         password=mysql_password,
         database=mysql_db
     )
 
-    print("Kết nối MySQL qua SSH thành công!")
+    print("MySQL Connection Successfully")
 
     # Thực hiện các thao tác MySQL ở đây nếu cần
     # ...
@@ -50,16 +50,15 @@ try:
     if not result:
         print("No data")
     else:
-        for row in result:
-            print(f"ID: {row[0]}, Name: {row[1]}, Address: {row[2]}")
+        print(result)
 
 
 except paramiko.AuthenticationException:
-    print("Lỗi xác thực: Sai tên đăng nhập hoặc mật khẩu.")
+    print("Error: Maybe wrong username or password")
 except paramiko.SSHException as e:
-    print(f"Lỗi kết nối SSH: {str(e)}")
+    print(f"SSH Connection Error: {str(e)}")
 except Exception as e:
-    print(f"Lỗi không xác định: {str(e)}")
+    print(f"Unknown Error: {str(e)}")
 
 
 finally:
