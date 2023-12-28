@@ -15,6 +15,7 @@ mysql_db = 'local'
 
 try:
     # Tạo đối tượng SSHClient
+    print("Loading SSH Connection...")
     ssh = paramiko.SSHClient()
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 
@@ -24,6 +25,7 @@ try:
     print("SSH Connection Successfully!")
 
     # Tạo kênh chuyển tiếp SSH
+    print("Loading MySQL Connection...")
     ssh_channel = ssh.get_transport().open_channel('direct-tcpip', (mysql_host, 3306), ('127.0.0.1', 0))
 
     # Lấy địa chỉ cổng local
@@ -42,9 +44,10 @@ try:
 
     # Thực hiện các thao tác MySQL ở đây nếu cần
     # ...
-    query = "SELECT * FROM local.test"
+    # query = "SELECT * FROM local.test"
+    select = input("Enter your query here: \n")
     cursor = mysql_conn.cursor()
-    cursor.execute(query)
+    cursor.execute(select)
     result = cursor.fetchall()
 
     if not result:
