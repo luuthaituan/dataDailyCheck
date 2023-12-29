@@ -15,17 +15,15 @@ mysql_db = 'local'
 
 try:
     # Tạo đối tượng SSHClient
-    print("Loading SSH Connection...")
     ssh = paramiko.SSHClient()
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 
     # Thực hiện kết nối SSH
     ssh.connect(ssh_host, ssh_port, ssh_username, ssh_password)
 
-    print("SSH Connection Successfully!")
+    print("Kết nối SSH thành công!")
 
     # Tạo kênh chuyển tiếp SSH
-    print("Loading MySQL Connection...")
     ssh_channel = ssh.get_transport().open_channel('direct-tcpip', (mysql_host, 3306), ('127.0.0.1', 0))
 
     # Lấy địa chỉ cổng local
@@ -40,30 +38,30 @@ try:
         database=mysql_db
     )
 
-    print("MySQL Connection Successfully!")
+    print("Kết nối MySQL qua SSH thành công!")
 
-    # Thực hiện các thao tác MySQL ở đây nếu cần
-    # ...
-    select = "SELECT * FROM local.test"
-    # select query
-    # select = input("Enter your query here: \n")
+    # Nhập dữ liệu từ bàn phím
+    name = input("Nhập tên: ")
+    address = input("Nhập địa chỉ: ")
+
+    # Thực hiện truy vấn SQL để thêm dữ liệu
+    insert_query = "INSERT INTO test (name, address) VALUES (%s, %s)"
+    insert_data = (name, address)
+
     cursor = mysql_conn.cursor()
-    cursor.execute(select)
-    result = cursor.fetchall()
+    cursor.execute(insert_query, insert_data)
+    mysql_conn.commit()
 
-    if not result:
-        print("No data")
-    else:
-        print(result)
-
+    print("Dữ liệu đã được thêm vào bảng!")
 
 except paramiko.AuthenticationException:
-    print("Error: Maybe wrong username or password")
+    print("Lỗi xác thực: Sai tên đăng nhập hoặc mật khẩu.")
 except paramiko.SSHException as e:
-    print(f"SSH Connection Error: {str(e)}")
+    print(f"Lỗi kết nối SSH: {str(e)}")
+except mysql.connector.Error as err:
+    print(f"Lỗi MySQL: {err}")
 except Exception as e:
-    print(f"Unknown Error: {str(e)}")
-
+    print(f"Lỗi không xác định: {str(e)}")
 
 finally:
     # Đóng kết nối MySQL
@@ -73,4 +71,3 @@ finally:
     # Đóng kết nối SSH sau khi kết thúc công việc
     if ssh.get_transport() is not None:
         ssh.get_transport().close()
-
