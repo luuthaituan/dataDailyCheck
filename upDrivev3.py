@@ -72,7 +72,7 @@ try:
 
         # Ghi dữ liệu vào file CSV
         csv_file_path = f'./{file_name}'
-        with open(csv_file_path, 'w', newline='') as csvfile:
+        with open(csv_file_path, 'w', newline='', encoding='utf-8') as csvfile:
             csv_writer = csv.writer(csvfile)
             csv_writer.writerow(headers)
             csv_writer.writerows(result)
@@ -81,21 +81,25 @@ try:
         gauth = GoogleAuth()
         gauth.LocalWebserverAuth()  # Creates a local webserver and handles authentication automatically.
 
+        # ID của thư mục trên Google Drive (thay bằng ID thực tế của thư mục của bạn)
+        folder_id = '189RDVanOy2-XNHxpmx0eQOH2-MYApNc1'
+
         # Create GoogleDrive instance with authenticated GoogleAuth instance
         drive = GoogleDrive(gauth)
 
-        # ID của thư mục trên Google Drive (thay bằng ID thực tế của thư mục của bạn)
-        folder_id = 'ID_THUMUC_GOOGLE_DRIVE'
-
         # Upload the CSV file to Google Drive vào thư mục cụ thể
         gdrive_file = drive.CreateFile({'title': file_name, 'parents': [{'id': folder_id}]})
+        gdrive_file.SetContentFile(csv_file_path)
         gdrive_file.Upload()
 
-        # Print the link to the uploaded file
-        print(f"File uploaded to Google Drive: {gdrive_file['alternateLink']}")
+        # Get the link to the uploaded file
+        file_link = gdrive_file['alternateLink']
 
-        # Gửi nội dung bảng
-        message = {"text": f"Dữ liệu trong bảng:\n```\n{table}\n```"}
+        # Print the link to the uploaded file
+        print(f"File uploaded to Google Drive: {file_link}")
+
+        # Gửi link đến file
+        message = {"text": f"Dữ liệu trong bảng đã được upload lên Google Drive. [Xem file]({file_link})"}
         requests.post(google_chat_webhook, json=message)
 
 except paramiko.AuthenticationException:
