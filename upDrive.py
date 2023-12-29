@@ -2,7 +2,11 @@ import paramiko
 import mysql.connector
 import json
 import requests
+import csv
 from tabulate import tabulate
+import datetime
+from pydrive.auth import GoogleAuth
+from pydrive.drive import GoogleDrive
 
 # Thông tin SSH
 ssh_host = '192.168.241.6'
@@ -47,22 +51,50 @@ try:
     print("Kết nối MySQL qua SSH thành công!")
 
     # Thực hiện truy vấn SQL
-    select_query = "SELECT * FROM test"
+    select_query1 = "SELECT * FROM local.test"
     cursor = mysql_conn.cursor()
-    cursor.execute(select_query)
+    cursor.execute(select_query1)
     result = cursor.fetchall()
 
     # Kiểm tra và xuất thông báo
     if not result:
         # Gửi thông báo không có dữ liệu
-        message = {"text": "Không có dữ liệu trong bảng."}
+        message = {"text": "Query Monitor Order TW stuck tại pending_payment [Chạy daily] => Không có data"}
         requests.post(google_chat_webhook, json=message)
     else:
-        # Tạo bảng từ dữ liệu
+        # Tạo nội dung bảng từ dữ liệu
         headers = [i[0] for i in cursor.description]
-        table = tabulate(result, headers, tablefmt="grid")
+        table = tabulate(result, headers, tablefmt="grid", disable_numparse=True)
 
-        # Gửi dữ liệu dưới dạng bảng
+        # Tạo tên file dựa trên thời gian hiện tại
+        current_time = datetime.datetime.now()
+        file_name = f"data_{current_time.strftime('%d-%m-%Y')}.csv"
+
+        # Ghi dữ liệu vào file CSV
+        csv_file_path = f'./{file_name}'
+        with open(csv_file_path, 'w', newline='') as csvfile:
+            csv_writer = csv.writer(csvfile)
+            csv_writer.writerow(headers)
+            csv_writer.writerows(result)
+
+        # Authenticate with Google Drive
+        gauth = GoogleAuth()
+        gauth.LocalWebserverAuth()  # Creates a local webserver and handles authentication automatically.
+
+        # Create GoogleDrive instance with authenticated GoogleAuth instance
+        drive = GoogleDrive(gauth)
+
+        # ID của thư mục trên Google Drive (thay bằng ID thực tế của thư mục của bạn)
+        folder_id = 'ID_THUMUC_GOOGLE_DRIVE'
+
+        # Upload the CSV file to Google Drive vào thư mục cụ thể
+        gdrive_file = drive.CreateFile({'title': file_name, 'parents': [{'id': folder_id}]})
+        gdrive_file.Upload()
+
+        # Print the link to the uploaded file
+        print(f"File uploaded to Google Drive: {gdrive_file['alternateLink']}")
+
+        # Gửi nội dung bảng
         message = {"text": f"Dữ liệu trong bảng:\n```\n{table}\n```"}
         requests.post(google_chat_webhook, json=message)
 

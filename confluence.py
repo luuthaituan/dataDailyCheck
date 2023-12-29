@@ -21,6 +21,11 @@ mysql_db = 'local'
 # Google Chat webhook
 google_chat_webhook = 'https://chat.googleapis.com/v1/spaces/AAAAEXIgRyA/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=VYNjrU3RF4Gr7yBBCNo4YJAmHQmrbeJ8xWTTWWQxw3E'
 
+# Thông tin Confluence
+confluence_url = 'https://confluence.smartosc.com/pages/viewpage.action?pageId=216402368'
+confluence_username = 'tuanlt'
+confluence_api_token = 'MDU0MTAxMzk5NjczOlXLw67nOG0BrWJH3ssI6nZIGTP5'
+
 try:
     # Tạo đối tượng SSHClient
     ssh = paramiko.SSHClient()
@@ -78,6 +83,45 @@ try:
         # Gửi nội dung bảng
         message = {"text": f"Dữ liệu trong bảng:\n```\n{table}\n```"}
         requests.post(google_chat_webhook, json=message)
+
+        # Đọc nội dung từ file CSV
+        with open(csv_file_path, 'r') as file:
+            csv_content = file.read()
+
+        # Tạo tiêu đề và mô tả trong định dạng cần thiết cho REST API
+        page_title = f'Data Report - {current_time.strftime("%d-%m-%Y")}'
+        page_description = f'Data report generated at {current_time.strftime("%H:%M:%S")}'
+
+        # Tạo tiêu đề và mô tả trong định dạng cần thiết cho REST API
+        page_data = {
+            'title': page_title,
+            'type': 'page',
+            'body': {
+                'storage': {
+                    'value': page_description,
+                    'representation': 'storage',
+                },
+            },
+        }
+
+        # Cấu hình header cho REST API request
+        headers = {
+            'Content-Type': 'application/json',
+        }
+
+        # Xây dựng REST API request để tạo trang mới hoặc cập nhật trang hiện tại
+        response = requests.put(
+            confluence_url,
+            auth=(confluence_username, confluence_api_token),
+            headers=headers,
+            json=page_data
+        )
+
+        # Kiểm tra kết quả
+        if response.status_code == 200:
+            print('Cập nhật trang thành công!')
+        else:
+            print(f'Lỗi: {response.status_code} - {response.text}')
 
 except paramiko.AuthenticationException:
     print("Lỗi xác thực: Sai tên đăng nhập hoặc mật khẩu.")
