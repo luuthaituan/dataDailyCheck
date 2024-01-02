@@ -1,0 +1,35 @@
+upDrive.v4:
+Đoạn code Python trên thực hiện các công việc sau:
+
+1. Import các thư viện và module cần thiết như paramiko (để kết nối SSH), mysql.connector (để kết nối đến cơ sở dữ liệu MySQL), json, requests (để gửi thông báo tới Google Chat), openpyxl (để tạo và xử lý file Excel), datetime (để xử lý thời gian), GoogleAuth và GoogleDrive (để tương tác với Google Drive).
+
+2. Định nghĩa thông tin kết nối SSH, thông tin kết nối MySQL và webhook của Google Chat.
+
+3. Thực hiện kết nối SSH đến máy chủ có địa chỉ IP '192.168.241.6' và sau đó tạo kênh chuyển tiếp SSH để kết nối đến cổng 3306 của máy chủ MySQL.
+
+4. Kết nối đến cơ sở dữ liệu MySQL thông qua kênh SSH đã tạo và thực hiện một truy vấn SQL để lấy dữ liệu từ bảng 'test' trong cơ sở dữ liệu 'local'.
+
+5. Kiểm tra kết quả của truy vấn và gửi thông báo tới Google Chat nếu không có dữ liệu, hoặc tạo một file Excel chứa dữ liệu và upload file này lên Google Drive nếu có dữ liệu.
+
+6. Xử lý các ngoại lệ có thể xảy ra trong quá trình thực hiện các kết nối và xử lý dữ liệu.
+
+7. Đóng kết nối MySQL và SSH sau khi công việc hoàn thành hoặc xảy ra lỗi.
+
+Đoạn code này có chức năng kết nối đến cơ sở dữ liệu MySQL thông qua SSH, thực hiện truy vấn SQL, tạo file Excel từ dữ liệu truy vấn, upload file Excel lên Google Drive và gửi thông báo tới Google Chat.
+
+upDrive.v3:
+This Python code performs the following tasks:
+
+1. Imports necessary libraries and modules such as paramiko (for SSH connection), mysql.connector (for MySQL connection), json, requests (for sending messages to Google Chat), csv, tabulate (for formatting tabular data), datetime, GoogleAuth, and GoogleDrive.
+
+2. Defines SSH connection information, MySQL connection information, and the Google Chat webhook.
+
+3. Establishes an SSH connection to the host '192.168.241.6' and creates an SSH channel for forwarding to the MySQL server.
+
+4. Connects to the MySQL database through the SSH channel, executes an SQL query to select data from the 'test' table in the 'local' database, and checks the query result.
+
+5. If there is no result, it sends a message to Google Chat. Otherwise, it creates a CSV file with the query result, uploads the file to Google Drive, and sends a message with the link to the uploaded file to Google Chat.
+
+6. Handles potential exceptions such as authentication errors, SSH connection errors, MySQL errors, and other unspecified errors.
+
+7. Closes the MySQL connection and SSH connection at the end of the process or when an error occurs.
