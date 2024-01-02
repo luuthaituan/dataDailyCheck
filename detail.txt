@@ -1,53 +1,37 @@
-upDrive.v4:
-Đoạn code Python trên thực hiện các công việc sau:
+This Python script appears to perform a series of tasks related to data extraction from a MySQL database, processing the data, and uploading it to Google Drive, with the capability to notify users through Google Chat. Let's break down the code into sections:
 
-1. Import các thư viện và module cần thiết như paramiko (để kết nối SSH), mysql.connector (để kết nối đến cơ sở dữ liệu MySQL), json, requests (để gửi thông báo tới Google Chat), openpyxl (để tạo và xử lý file Excel), datetime (để xử lý thời gian), GoogleAuth và GoogleDrive (để tương tác với Google Drive).
+Imports
+The script uses various Python libraries for different purposes. Here are the imported libraries:
 
-2. Định nghĩa thông tin kết nối SSH, thông tin kết nối MySQL và webhook của Google Chat.
+paramiko: Used for SSH connections.
+mysql.connector: Used for connecting to MySQL databases.
+json, requests: Used for handling JSON data and making HTTP requests.
+openpyxl: Used for working with Excel files.
+datetime: Used for obtaining the current date and time.
+pydrive.auth, pydrive.drive: Used for interacting with Google Drive.
+os: Used for operating system-related tasks.
+SSH Connection
+The script establishes an SSH connection to a server with the specified host, port, username, and password. It then creates a direct-tcpip channel for forwarding local connections to the MySQL server.
 
-3. Thực hiện kết nối SSH đến máy chủ có địa chỉ IP '192.168.241.6' và sau đó tạo kênh chuyển tiếp SSH để kết nối đến cổng 3306 của máy chủ MySQL.
+MySQL Connection
+Using the established SSH connection, the script connects to a MySQL database with the specified host, username, password, and database name.
 
-4. Kết nối đến cơ sở dữ liệu MySQL thông qua kênh SSH đã tạo và thực hiện một truy vấn SQL để lấy dữ liệu từ bảng 'test' trong cơ sở dữ liệu 'local'.
+MySQL Query
+A sample SQL query is executed to fetch data from the local.test table.
 
-5. Kiểm tra kết quả của truy vấn và gửi thông báo tới Google Chat nếu không có dữ liệu, hoặc tạo một file Excel chứa dữ liệu và upload file này lên Google Drive nếu có dữ liệu.
+Data Processing and Excel Export
+If the query results contain data, the script creates an Excel file (data_{current_date}.xlsx) and writes the data into it. The Excel file is then saved locally.
 
-6. Xử lý các ngoại lệ có thể xảy ra trong quá trình thực hiện các kết nối và xử lý dữ liệu.
+Google Drive Authentication
+The script authenticates with Google Drive using the pydrive library. It checks if the credentials file (mycreds.txt) exists and creates one if not. It loads the credentials and prepares for interaction with Google Drive.
 
-7. Đóng kết nối MySQL và SSH sau khi công việc hoàn thành hoặc xảy ra lỗi.
+Google Drive File Handling
+The script checks if the Excel file already exists on Google Drive within a specified folder. If it does, the existing file is deleted. The script then uploads the Excel file to Google Drive and obtains a link to the uploaded file.
 
-Đoạn code này có chức năng kết nối đến cơ sở dữ liệu MySQL thông qua SSH, thực hiện truy vấn SQL, tạo file Excel từ dữ liệu truy vấn, upload file Excel lên Google Drive và gửi thông báo tới Google Chat.
+Google Chat Notification
+Finally, the script sends a message to Google Chat, providing a link to the uploaded file if data was present in the MySQL query results or indicating that no data was found.
 
-upDrive.v3:
-This Python code performs the following tasks:
+Exception Handling
+The script includes exception handling to capture various types of errors, such as authentication errors, SSH connection errors, MySQL errors, or general exceptions. The connections are properly closed in the finally block.
 
-1. Imports necessary libraries and modules such as paramiko (for SSH connection), mysql.connector (for MySQL connection), json, requests (for sending messages to Google Chat), csv, tabulate (for formatting tabular data), datetime, GoogleAuth, and GoogleDrive.
-
-2. Defines SSH connection information, MySQL connection information, and the Google Chat webhook.
-
-3. Establishes an SSH connection to the host '192.168.241.6' and creates an SSH channel for forwarding to the MySQL server.
-
-4. Connects to the MySQL database through the SSH channel, executes an SQL query to select data from the 'test' table in the 'local' database, and checks the query result.
-
-5. If there is no result, it sends a message to Google Chat. Otherwise, it creates a CSV file with the query result, uploads the file to Google Drive, and sends a message with the link to the uploaded file to Google Chat.
-
-6. Handles potential exceptions such as authentication errors, SSH connection errors, MySQL errors, and other unspecified errors.
-
-7. Closes the MySQL connection and SSH connection at the end of the process or when an error occurs.
-
-upDrive.v5:
-
-This Python code does the following:
-
-1. Imports necessary libraries and modules such as paramiko (for SSH connection), mysql.connector (for MySQL connection), json, requests (for sending messages to Google Chat), openpyxl (for working with Excel files), datetime, GoogleAuth, GoogleDrive, and os.
-
-2. Defines SSH connection information, MySQL connection information, and the Google Chat webhook.
-
-3. Establishes an SSH connection to the host '192.168.241.6' and creates an SSH channel for forwarding to the MySQL server.
-
-4. Connects to the MySQL database through the SSH channel, executes an SQL query to select data from the 'test' table in the 'local' database, and checks the query result.
-
-5. If there is no result, it sends a message to Google Chat. Otherwise, it creates an Excel file with the query result, uploads the file to Google Drive, and sends a message with the link to the uploaded file to Google Chat.
-
-6. Handles potential exceptions such as authentication errors, SSH connection errors, MySQL errors, and other unspecified errors.
-
-7. Closes the MySQL connection and SSH connection at the end of the process or when an error occurs.
+Overall, this script automates the process of extracting data from a MySQL database, creating an Excel file, and uploading it to Google Drive while providing notifications along the way.
