@@ -60,7 +60,7 @@ try:
     # Kiểm tra và xuất thông báo
     if not result:
         # Gửi thông báo không có dữ liệu
-        message = {"text": "Query Monitor Order TW stuck tại pending_payment [Chạy daily] => Không có data"}
+        message = {"text": "Không có data"}
         requests.post(google_chat_webhook, json=message)
     else:
         # Tạo tên file dựa trên thời gian hiện tại
