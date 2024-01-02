@@ -33,3 +33,21 @@ This Python code performs the following tasks:
 6. Handles potential exceptions such as authentication errors, SSH connection errors, MySQL errors, and other unspecified errors.
 
 7. Closes the MySQL connection and SSH connection at the end of the process or when an error occurs.
+
+upDrive.v5:
+
+This Python code does the following:
+
+1. Imports necessary libraries and modules such as paramiko (for SSH connection), mysql.connector (for MySQL connection), json, requests (for sending messages to Google Chat), openpyxl (for working with Excel files), datetime, GoogleAuth, GoogleDrive, and os.
+
+2. Defines SSH connection information, MySQL connection information, and the Google Chat webhook.
+
+3. Establishes an SSH connection to the host '192.168.241.6' and creates an SSH channel for forwarding to the MySQL server.
+
+4. Connects to the MySQL database through the SSH channel, executes an SQL query to select data from the 'test' table in the 'local' database, and checks the query result.
+
+5. If there is no result, it sends a message to Google Chat. Otherwise, it creates an Excel file with the query result, uploads the file to Google Drive, and sends a message with the link to the uploaded file to Google Chat.
+
+6. Handles potential exceptions such as authentication errors, SSH connection errors, MySQL errors, and other unspecified errors.
+
+7. Closes the MySQL connection and SSH connection at the end of the process or when an error occurs.
