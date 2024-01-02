@@ -24,6 +24,9 @@ mysql_db = 'local'
 # Google Chat webhook
 google_chat_webhook = 'https://chat.googleapis.com/v1/spaces/AAAAEXIgRyA/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=VYNjrU3RF4Gr7yBBCNo4YJAmHQmrbeJ8xWTTWWQxw3E'
 
+# Tên để hiển thị trong thông báo khi không có dữ liệu
+monitoring_name = 'Order 5.0'
+
 try:
     # Tạo đối tượng SSHClient
     ssh = paramiko.SSHClient()
@@ -60,7 +63,7 @@ try:
     # Kiểm tra và xuất thông báo
     if not result:
         # Gửi thông báo không có dữ liệu
-        message = {"text": "Không có data"}
+        message = {"text": f"{monitoring_name} - Không có data"}
         requests.post(google_chat_webhook, json=message)
     else:
         # Tạo tên file dựa trên thời gian hiện tại
@@ -126,7 +129,7 @@ try:
         print(f"File uploaded to Google Drive: {uploaded_file_link}")
 
         # Gửi link đến file
-        message = {"text": f"Dữ liệu trong bảng đã được upload lên Google Drive. [Xem file]({uploaded_file_link})"}
+        message = {"text": f"{monitoring_name} - Dữ liệu trong bảng đã được upload lên Google Drive. [Xem file]({uploaded_file_link})"}
         requests.post(google_chat_webhook, json=message)
 
 except paramiko.AuthenticationException:
