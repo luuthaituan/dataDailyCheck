@@ -65,6 +65,12 @@ def send_message_to_google_chat(link, monitoring_name='Order 5.0', webhook_url=g
 
 
 def export_to_excel_and_drive(dataframe):
+    if dataframe.empty:
+        # Gửi thông báo không có dữ liệu
+        message = {"text": "Không có dữ liệu"}
+        requests.post(google_chat_webhook, json=message)
+        return  # Kết thúc hàm nếu không có dữ liệu
+
     current_time = datetime.datetime.now()
     file_name = f"data_{current_time.strftime('%d-%m-%Y')}.xlsx"
     excel_file_path = os.path.abspath(file_name)
