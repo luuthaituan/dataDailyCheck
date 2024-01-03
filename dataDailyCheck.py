@@ -9,20 +9,24 @@ from pydrive.auth import GoogleAuth
 from pydrive.drive import GoogleDrive
 import os
 
+# Đọc thông tin từ tệp cấu hình
+with open('config.json', 'r') as config_file:
+    config = json.load(config_file)
+
 # Thông tin SSH
-ssh_host = '192.168.241.6'
-ssh_port = 22
-ssh_username = 'thaituan'
-ssh_password = 'Tuan@8999'
+ssh_host = config["ssh"]["host"]
+ssh_port = config["ssh"]["port"]
+ssh_username = config["ssh"]["username"]
+ssh_password = config["ssh"]["password"]
 
 # Thông tin kết nối MySQL
-mysql_host = '192.168.241.6'  # Địa chỉ IP của máy chủ MySQL
-mysql_user = 'thaituan'
-mysql_password = 'Tuan@8999'
-mysql_db = 'local'
+mysql_host = config["mysql"]["host"]
+mysql_user = config["mysql"]["user"]
+mysql_password = config["mysql"]["password"]
+mysql_db = config["mysql"]["db"]
 
 # Google Chat webhook
-google_chat_webhook = 'https://chat.googleapis.com/v1/spaces/AAAAEXIgRyA/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=VYNjrU3RF4Gr7yBBCNo4YJAmHQmrbeJ8xWTTWWQxw3E'
+google_chat_webhook = config["google_chat_webhook"]
 
 # Tên để hiển thị trong thông báo khi không có dữ liệu
 monitoring_name = 'Order 5.0'
@@ -45,7 +49,7 @@ try:
 
     # Kết nối MySQL qua SSH
     mysql_conn = mysql.connector.connect(
-        host='192.168.241.6',
+        host=mysql_host,
         port=3306,
         user=mysql_user,
         password=mysql_password,
@@ -104,7 +108,7 @@ try:
         gauth.LoadCredentialsFile(creds_file_path)  # Load saved credentials (if any)
 
         # ID của thư mục trên Google Drive (thay bằng ID thực tế của thư mục của bạn)
-        folder_id = '189RDVanOy2-XNHxpmx0eQOH2-MYApNc1'
+        folder_id = config["drive_folder_id"]
 
         # Create GoogleDrive instance with authenticated GoogleAuth instance
         drive = GoogleDrive(gauth)
