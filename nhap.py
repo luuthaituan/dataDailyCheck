@@ -10,13 +10,14 @@ from pydrive.drive import GoogleDrive
 import requests
 import json
 
-ssh_host = '192.168.10.146'
-ssh_username = 'sm-dev'
-ssh_password = 'SM_dev@123'
-database_username = 'vt2pniqibrqv6_ro'
-database_password = 'FhMMJTrLejNYax3'
-database_name = 'vt2pniqibrqv6'
-google_chat_webhook = 'your_google_chat_webhook_url'
+ssh_host = '192.168.241.7'
+ssh_username = 'thaituan'
+ssh_password = 'Tuan@8999'
+database_username = 'thaituan'
+database_password = 'Tuan@8999'
+database_name = 'local'
+google_chat_webhook = 'https://chat.googleapis.com/v1/spaces/AAAAEXIgRyA/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=VYNjrU3RF4Gr7yBBCNo4YJAmHQmrbeJ8xWTTWWQxw3E'
+
 
 def open_ssh_tunnel(verbose=False):
     if verbose:
@@ -32,6 +33,7 @@ def open_ssh_tunnel(verbose=False):
 
     tunnel.start()
 
+
 def mysql_connect():
     global connection
     connection = pymysql.connect(
@@ -42,20 +44,25 @@ def mysql_connect():
         port=tunnel.local_bind_port
     )
 
+
 def run_query(sql):
     return pd.read_sql_query(sql, connection)
+
 
 def mysql_disconnect():
     connection.close()
 
+
 def close_ssh_tunnel():
     tunnel.close()
+
 
 def send_message_to_google_chat(link, monitoring_name='Order 5.0', webhook_url=google_chat_webhook):
     message = {
         "text": f"{monitoring_name} - Dữ liệu trong bảng đã được upload lên Google Drive. [Xem file]({link})"
     }
     requests.post(webhook_url, json=message)
+
 
 def export_to_excel_and_drive(dataframe):
     current_time = datetime.datetime.now()
@@ -65,7 +72,8 @@ def export_to_excel_and_drive(dataframe):
     workbook = Workbook()
     sheet = workbook.active
 
-    headers = dataframe.columns
+    # Convert headers to a list
+    headers = list(dataframe.columns)
     sheet.append(headers)
 
     for _, row in dataframe.iterrows():
@@ -82,7 +90,7 @@ def export_to_excel_and_drive(dataframe):
 
     gauth.LoadCredentialsFile(creds_file_path)
 
-    folder_id = 'your_folder_id'
+    folder_id = '189RDVanOy2-XNHxpmx0eQOH2-MYApNc1'
     drive = GoogleDrive(gauth)
 
     file_list = drive.ListFile({'q': f"title='{file_name}' and '{folder_id}' in parents and trashed=false"}).GetList()
@@ -101,9 +109,10 @@ def export_to_excel_and_drive(dataframe):
     # Gửi link Google Drive qua Google Chat
     send_message_to_google_chat(uploaded_file_link)
 
+
 open_ssh_tunnel()
 mysql_connect()
-df = run_query("SELECT * FROM adjust_back LIMIT 5;")
+df = run_query("SELECT * FROM local.test;")
 df.head()
 print(df.head())
 
