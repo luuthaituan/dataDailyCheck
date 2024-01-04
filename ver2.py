@@ -10,13 +10,17 @@ from pydrive.drive import GoogleDrive
 import requests
 import json
 
-ssh_host = '192.168.241.7'
-ssh_username = 'thaituan'
-ssh_password = 'Tuan@8999'
-database_username = 'thaituan'
-database_password = 'Tuan@8999'
-database_name = 'local'
-google_chat_webhook = 'https://chat.googleapis.com/v1/spaces/AAAAEXIgRyA/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=VYNjrU3RF4Gr7yBBCNo4YJAmHQmrbeJ8xWTTWWQxw3E'
+
+with open('config.json', 'r') as config_file:
+    config = json.load(config_file)
+
+ssh_host = config["ssh"]["host"]
+ssh_username = config["ssh"]["username"]
+ssh_password = config["ssh"]["password"]
+database_username = config["mysql"]["user"]
+database_password = config["mysql"]["password"]
+database_name = config["mysql"]["db"]
+google_chat_webhook = config["google_chat_webhook"]
 
 
 def open_ssh_tunnel(verbose=False):
@@ -96,7 +100,7 @@ def export_to_excel_and_drive(dataframe):
 
     gauth.LoadCredentialsFile(creds_file_path)
 
-    folder_id = '189RDVanOy2-XNHxpmx0eQOH2-MYApNc1'
+    folder_id = config["drive_folder_id"]
     drive = GoogleDrive(gauth)
 
     file_list = drive.ListFile({'q': f"title='{file_name}' and '{folder_id}' in parents and trashed=false"}).GetList()
