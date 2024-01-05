@@ -11,6 +11,7 @@ import requests
 import json
 from oauth2client.service_account import ServiceAccountCredentials
 
+
 def open_ssh_tunnel(config, verbose=False):
     if verbose:
         sshtunnel.DEFAULT_LOGLEVEL = logging.DEBUG
@@ -25,6 +26,7 @@ def open_ssh_tunnel(config, verbose=False):
     tunnel.start()
     return tunnel
 
+
 def mysql_connect(config, tunnel):
     connection = pymysql.connect(
         host='127.0.0.1',
@@ -35,14 +37,18 @@ def mysql_connect(config, tunnel):
     )
     return connection
 
+
 def run_query(sql, connection):
     return pd.read_sql_query(sql, connection)
+
 
 def mysql_disconnect(connection):
     connection.close()
 
+
 def close_ssh_tunnel(tunnel):
     tunnel.close()
+
 
 def send_message_to_google_chat(link, config):
     message = {
@@ -50,10 +56,12 @@ def send_message_to_google_chat(link, config):
     }
     requests.post(config["google_chat_webhook"], json=message)
 
+
 def read_credentials_from_file(credentials_file_path):
     with open(credentials_file_path, 'r') as credentials_file:
         credentials = json.load(credentials_file)
     return credentials
+
 
 def export_to_excel_and_drive(dataframe, config):
     if dataframe.empty:
@@ -82,7 +90,8 @@ def export_to_excel_and_drive(dataframe, config):
     credentials = read_credentials_from_file(credentials_path)
 
     gauth = GoogleAuth()
-    gauth.credentials = ServiceAccountCredentials.from_json_keyfile_dict(credentials, ['https://www.googleapis.com/auth/drive'])
+    gauth.credentials = ServiceAccountCredentials.from_json_keyfile_dict(credentials,
+                                                                         ['https://www.googleapis.com/auth/drive'])
 
     folder_id = config["drive_folder_id"]
     drive = GoogleDrive(gauth)
@@ -102,6 +111,7 @@ def export_to_excel_and_drive(dataframe, config):
 
     # Gửi link Google Drive qua Google Chat
     send_message_to_google_chat(uploaded_file_link, config)
+
 
 if __name__ == "__main__":
     with open('config.json', 'r') as config_file:
