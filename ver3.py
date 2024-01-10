@@ -20,7 +20,7 @@ def open_ssh_tunnel(config, verbose=False):
         ssh_address=(config["ssh"]["host"], config["ssh"]["port"]),
         ssh_username=config["ssh"]["username"],
         ssh_password=config["ssh"]["password"],
-        remote_bind_address=('127.0.0.1', 3306)
+        remote_bind_address=('127.0.0.1', 30003)
     )
 
     tunnel.start()
@@ -52,7 +52,7 @@ def close_ssh_tunnel(tunnel):
 
 def send_message_to_google_chat(link, config):
     message = {
-        "text": f"Order 5.0 - Dữ liệu trong bảng đã được upload lên Google Drive. [Xem file]({link})"
+        "text": f"Dữ liệu trong bảng đã được upload lên Google Drive. [Xem file]({link})"
     }
     requests.post(config["google_chat_webhook"], json=message)
 
@@ -121,7 +121,7 @@ if __name__ == "__main__":
     connection = mysql_connect(config, tunnel)
 
     try:
-        df = run_query("SELECT * FROM local.test;", connection)
+        df = run_query("select * test.test;", connection)
         df.head()
         print(df.head())
 

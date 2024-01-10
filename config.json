@@ -1,15 +1,15 @@
 {
     "ssh": {
-        "host": "192.168.241.7",
+        "host": "192.168.241.8",
         "port": 22,
         "username": "thaituan",
-        "password": "Tuan@8999"
+        "password": "tuan89"
     },
     "mysql": {
-        "host": "192.168.241.7",
+        "host": "127.0.0.1",
         "user": "thaituan",
-        "password": "Tuan@8999",
-        "db": "local"
+        "password": "tuan89",
+        "db": "test"
     },
     "google_chat_webhook": "https://chat.googleapis.com/v1/spaces/AAAAEXIgRyA/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=VYNjrU3RF4Gr7yBBCNo4YJAmHQmrbeJ8xWTTWWQxw3E",
     "drive_folder_id": "189RDVanOy2-XNHxpmx0eQOH2-MYApNc1"
